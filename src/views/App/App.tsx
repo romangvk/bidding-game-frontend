@@ -1,4 +1,16 @@
+import { helloWorld } from "../../services/functions";
+import { useState } from "react";
+
 const App = () => {
+  const [data, setData] = useState<string>();
+
+  if (!data) {
+    (async () => {
+      const response = await helloWorld();
+      setData(response.data);
+    })();
+  }
+
   return (
     <div
       style={{
@@ -9,7 +21,9 @@ const App = () => {
         justifyContent: "center",
         alignItems: "center",
       }}
-    ></div>
+    >
+      {data ? data : "Loading..."}
+    </div>
   );
 };
 
