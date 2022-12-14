@@ -1,5 +1,7 @@
 import { rest } from "msw";
-import URL from "../api/api";
+import { app, functions } from "../firebase/init";
+
+export const URL = `http://localhost:5001/${app.options.projectId}/${functions.region}`;
 
 export const handlers = [
   rest.post(`${URL}/helloWorld`, async (req, res, ctx) => {
@@ -8,6 +10,7 @@ export const handlers = [
         ctx.status(200),
         ctx.json({
           success: true,
+          data: "Mocked successfully!",
         }),
       ],
     ];
