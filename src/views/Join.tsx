@@ -1,9 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import View from "../components/View";
+import { auth } from "../firebase/init";
+import { signIn } from "../services/auth";
+import { joinRoom } from "../services/functions";
 
 const Join = () => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+
+  const currentUser = auth.currentUser;
+
+  const navigate = useNavigate();
   return (
     <View>
       <h1>{room ? "Join" : "Create"} a room</h1>
@@ -26,10 +34,20 @@ const Join = () => {
         type="button"
         value="Play"
         className="welcome"
-        onClick={() => {
-          // sign in
-          // join/create room
-          // navigate to room
+        onClick={async () => {
+          try {
+            // sign in
+            if (!currentUser) await signIn();
+            // join/create room
+            const { data: roomCode } = await joinRoom({
+              name,
+              room: room || undefined,
+            });
+            // navigate to room
+            navigate(`/${roomCode}`);
+          } catch (error) {
+            console.log(error);
+          }
         }}
       />
     </View>
